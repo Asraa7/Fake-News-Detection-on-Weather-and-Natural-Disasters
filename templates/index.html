@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fake News Detector — Weather & Natural Disasters</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 2.5rem;
+      max-width: 650px;
+      width: 100%;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    }
+    h1 {
+      font-size: 1.6rem;
+      color: #1a1a2e;
+      margin-bottom: 0.4rem;
+    }
+    p.sub {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 1.8rem;
+    }
+    textarea {
+      width: 100%;
+      height: 140px;
+      border: 2px solid #dde3ec;
+      border-radius: 10px;
+      padding: 1rem;
+      font-size: 0.95rem;
+      resize: vertical;
+      outline: none;
+      transition: border 0.2s;
+    }
+    textarea:focus { border-color: #4a6cf7; }
+    button {
+      margin-top: 1rem;
+      width: 100%;
+      padding: 0.85rem;
+      background: #1a1a2e;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: #4a6cf7; }
+    .result {
+      margin-top: 1.5rem;
+      padding: 1.2rem 1.5rem;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+    .result.real { background: #e8f5e9; color: #2e7d32; border-left: 5px solid #2e7d32; }
+    .result.fake { background: #fdecea; color: #c62828; border-left: 5px solid #c62828; }
+    .confidence { font-size: 0.85rem; font-weight: 400; margin-top: 0.3rem; color: #555; }
+    .footer { margin-top: 2rem; font-size: 0.8rem; color: #aaa; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🌪️ Fake News Detector</h1>
+    <p class="sub">Weather & Natural Disasters Edition — Powered by NLP & Machine Learning</p>
+
+    <form method="POST">
+      <textarea name="news_text" placeholder="Paste a news headline or article snippet about weather or natural disasters here...">{{ news_text }}</textarea>
+      <button type="submit">Analyse News</button>
+    </form>
+
+    {% if result %}
+      <div class="result {{ 'real' if 'REAL' in result.label else 'fake' }}">
+        {{ result.label }}
+        <div class="confidence">Confidence: {{ result.confidence }}%</div>
+      </div>
+    {% endif %}
+
+    <div class="footer">Built by Asraa Falak. Y &nbsp;|&nbsp; AI & Data Science Project</div>
+  </div>
+</body>
+</html>
