@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Model Comparison — Fake News Detector</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--navy:#0a0e1a;--cyan:#00b4d8;--accent:#48cae4;--green:#06d6a0;--red:#ef476f;--text:#e2e8f0;--muted:#94a3b8}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);min-height:100vh;
+    background:radial-gradient(ellipse at 20% 20%,#0d2137 0,transparent 60%),radial-gradient(ellipse at 80% 80%,#0a1628 0,transparent 60%),var(--navy)}
+  .wrap{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+  a.back{color:var(--accent);text-decoration:none;font-size:.9rem}
+  a.back:hover{text-decoration:underline}
+  h1{font-size:1.7rem;margin:1rem 0 .3rem;background:linear-gradient(135deg,#fff,var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  p.sub{color:var(--muted);font-size:.92rem;line-height:1.6;margin-bottom:1.5rem}
+  .card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 8px 32px rgba(0,0,0,.3);overflow-x:auto}
+  h2{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem}
+  table{width:100%;border-collapse:collapse;font-size:.92rem}
+  th,td{padding:.7rem .6rem;text-align:center;border-bottom:1px solid rgba(255,255,255,.08)}
+  th{color:var(--muted);font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+  td:first-child,th:first-child{text-align:left}
+  .best{color:var(--green);font-weight:700}
+  .tag{display:inline-block;margin-left:.5rem;padding:.1rem .6rem;border-radius:999px;font-size:.7rem;background:rgba(6,214,160,.15);border:1px solid rgba(6,214,160,.35);color:var(--green)}
+  .cm{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem}
+  .cmbox h3{font-size:.95rem;margin-bottom:.6rem}
+  .cmt td,.cmt th{padding:.5rem;border:1px solid rgba(255,255,255,.08)}
+  .ok{background:rgba(6,214,160,.12)} .bad{background:rgba(239,71,111,.12)}
+  .note{color:var(--muted);font-size:.85rem;line-height:1.7}
+  .note b{color:var(--text)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="/">← Back to detector</a>
+  <h1>Naive Bayes vs Logistic Regression</h1>
+  <p class="sub">Both models use the same TF-IDF features and the same cross-validation folds, so the comparison is fair.</p>
+
+  {% if stats and stats.comparison %}
+  <div class="card">
+    <h2>Results — {{ stats.method }}</h2>
+    <table>
+      <tr><th>Model</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th></tr>
+      {% for r in stats.comparison %}
+      <tr>
+        <td>{{ r.model }}{% if r.model == stats.selected %}<span class="tag">selected</span>{% endif %}</td>
+        <td>{{ r.accuracy }}% <small>±{{ r.accuracy_std }}</small></td>
+        <td>{{ r.precision }}%</td>
+        <td>{{ r.recall }}%</td>
+        <td class="{{ 'best' if r.model == stats.selected else '' }}">{{ r.f1 }}% <small>±{{ r.f1_std }}</small></td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Confusion matrices (each sample predicted while held out)</h2>
+    <div class="cm">
+      {% for r in stats.comparison %}
+      <div class="cmbox">
+        <h3>{{ r.model }}</h3>
+        <table class="cmt">
+          <tr><th></th><th>Predicted FAKE</th><th>Predicted REAL</th></tr>
+          <tr><th>Actual FAKE</th><td class="ok">{{ r.confusion.tn }}</td><td class="bad">{{ r.confusion.fp }}</td></tr>
+          <tr><th>Actual REAL</th><td class="bad">{{ r.confusion.fn }}</td><td class="ok">{{ r.confusion.tp }}</td></tr>
+        </table>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="card note">
+    <b>How to read this.</b> Accuracy is the share of correct predictions. Precision asks: of the items called REAL, how many truly were?
+    Recall asks: of all truly REAL items, how many were found? F1 balances both. “±” shows how much the score moved between folds.<br><br>
+    <b>Honest limits.</b> The dataset has only {{ stats.total_samples }} hand-written headlines ({{ stats.real_count }} real, {{ stats.fake_count }} fake), so differences of a few points between the two models are not meaningful.
+    Scores on a small, single-author dataset also overestimate how well the model handles real-world news.
+  </div>
+  {% else %}
+  <div class="card note">No results yet. Run <b>python train.py</b> and refresh this page.</div>
+  {% endif %}
+</div>
+</body>
+</html>
