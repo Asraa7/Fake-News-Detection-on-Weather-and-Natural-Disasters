@@ -9,8 +9,12 @@ A Flask web app that classifies weather and natural-disaster news headlines as *
 > **Status:** a learning prototype trained on a small hand-written dataset. See [Limitations](#limitations).
 
 ## Screenshots
-_Add 2 screenshots here: `![Home](screenshots/home.png)` and `![Compare](screenshots/compare.png)`_
 
+### Home Page
+![Home](screenshots/home.png)
+
+### Model Comparison
+![Compare](screenshots/compare.png)
 ## Features
 - Paste a headline and get a verdict with a confidence bar and real/fake probabilities
 - **Uncertain** result when confidence is below 60% instead of forcing a guess
@@ -56,4 +60,5 @@ python app.py          # open http://127.0.0.1:5000
 Train on a larger public fake-news dataset, add an out-of-domain test set, and deploy online.
 
 ## Author
-**Asraa Falak. Y**, B.Sc. AI & Data Science, Gonzaga College of Arts and Science for Women · [LinkedIn](https://linkedin.com/in/asraa-falak)
+**Asraa Falak. Y**, B.Sc. AI & Data Science
+ [LinkedIn](https://linkedin.com/in/asraa-falak)
